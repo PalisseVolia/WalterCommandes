@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coding Tutorials</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="tutorial-nav">
+      <button class="nav-btn active" data-tutorial="Micro-ROS">
+        Micro-ROS
+      </button>
+      <button class="nav-btn" data-tutorial="tutorial2">Tutorial 2</button>
+      <button class="nav-btn" data-tutorial="tutorial3">Tutorial 3</button>
+    </div>
+    <div class="container">
+      <button id="theme-toggle" class="theme-toggle">Toggle Dark Mode</button>
+      <h1>Walter tutorials</h1>
+
+      <div id="Micro-ROS" class="tutorial-content active">
+        <div class="tutorial-section">
+          <h3>Step 1: Installer micro-ROS</h3>
+
+          <p>Installation des prérequis:</p>
+          <pre>
+<code>sudo apt install software-properties-common
+sudo add-apt-repository universe</code><button class="copy-btn">Copy</button></pre>
+
+          <pre>
+<code>sudo apt update && sudo apt install curl -y
+sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg</code><button class="copy-btn">Copy</button></pre>
+
+          <pre>
+<code>echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null</code><button class="copy-btn">Copy</button></pre>
+
+          <pre>
+<code>sudo apt update</code><button class="copy-btn">Copy</button></pre>
+
+          <pre>
+<code>mkdir -p ~/micro_ros_ws/src
+cd ~/micro_ros_ws</code><button class="copy-btn">Copy</button></pre>
+
+          <pre>
+<code>git clone -b foxy https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup</code><button class="copy-btn">Copy</button></pre>
+
+          <h3>Step 2: Installation des dependencies</h3>
+
+          <p>ROS2 dependencies</p>
+          <pre>
+<code>sudo apt install python3-colcon-common-extensions python3-vcstool</code><button class="copy-btn">Copy</button></pre>
+
+          <p>Rosdep</p>
+          <pre>
+<code>rosdep init
+rosdep update
+rosdep install --from-paths src --ignore-src -y</code><button class="copy-btn">Copy</button></pre>
+
+          <h3>Step 3: Setup micro-ROS</h3>
+
+          <p>Build ROS2</p>
+          <pre>
+<code>colcon build
+source install/local_setup.bash</code><button class="copy-btn">Copy</button></pre>
+
+          <h3>Step 4: Installation firmware & Agent</h3>
+
+          <p>Firmware</p>
+          <pre>
+<code>ros2 run micro_ros_setup create_firmware_ws.sh host
+source install/local_setup.bash</code><button class="copy-btn">Copy</button></pre>
+
+          <p>Agent</p>
+          <pre>
+<code>ros2 run micro_ros_setup create_agent_ws.sh
+ros2 run micro_ros_setup build_agent.sh
+source install/local_setup.bash</code><button class="copy-btn">Copy</button></pre>
+
+          <h3>Step 5: Run</h3>
+
+          <p>Default baud rate is 115200</p>
+          <pre>
+<code>ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyACM0</code><button class="copy-btn">Copy</button></pre>
+
+          <h3>In case of error :</h3>
+
+          <p>Check if ACM0 is busy</p>
+          <pre>
+<code>lsof | grep ttyACM0</code><button class="copy-btn">Copy</button></pre>
+
+          <p>Kill corresponding process</p>
+          <pre>
+<code>kill "process number"</code><button class="copy-btn">Copy</button></pre>
+
+        </div>
+      </div>
+
+      <div id="tutorial2" class="tutorial-content">
+        <h2>Tutorial 2: Advanced Concepts</h2>
+        <div class="tutorial-section">
+          <h3>Step 1: Complex Function</h3>
+          <p>Let's create a more advanced function:</p>
+          <pre><code>function processData(data) {
+    return data.map(item => item * 2)
+               .filter(item => item > 10);
+}
+
+const result = processData([2, 4, 6, 8, 10]);</code><button class="copy-btn">Copy</button></pre>
+        </div>
+      </div>
+
+      <div id="tutorial3" class="tutorial-content">
+        <h2>Tutorial 3: Best Practices</h2>
+        <div class="tutorial-section">
+          <h3>Step 1: Code Organization</h3>
+          <p>Here's an example of well-organized code:</p>
+          <pre><code>// Constants
+const MAX_ITEMS = 100;
+
+// Utility functions
+function validateInput(input) {
+    // Implementation here
+}
+
+// Main functionality
+class ItemManager {
+    constructor() {
+        // Implementation here
+    }
+    
+    addItem(item) {
+        // Implementation here
+    }
+}
+
+// Usage
+const manager = new ItemManager();</code><button class="copy-btn">Copy</button></pre>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
