@@ -11,8 +11,10 @@
       <button class="nav-btn active" data-tutorial="Micro-ROS">
         Micro-ROS
       </button>
-      <button class="nav-btn" data-tutorial="tutorial2">Tutorial 2</button>
-      <button class="nav-btn" data-tutorial="tutorial3">Tutorial 3</button>
+      <button class="nav-btn" data-tutorial="Create cmd_vel node">
+        Create cmd_vel node
+      </button>
+      <button class="nav-btn" data-tutorial="Create a ROS package">Create a ROS package</button>
     </div>
     <div class="container">
       <button id="theme-toggle" class="theme-toggle">Toggle Dark Mode</button>
@@ -91,52 +93,123 @@ source install/local_setup.bash</code><button class="copy-btn">Copy</button></pr
           <p>Kill corresponding process</p>
           <pre>
 <code>kill "process number"</code><button class="copy-btn">Copy</button></pre>
-
         </div>
       </div>
 
-      <div id="tutorial2" class="tutorial-content">
-        <h2>Tutorial 2: Advanced Concepts</h2>
+      <div id="Create cmd_vel node" class="tutorial-content">
         <div class="tutorial-section">
-          <h3>Step 1: Complex Function</h3>
-          <p>Let's create a more advanced function:</p>
-          <pre><code>function processData(data) {
-    return data.map(item => item * 2)
-               .filter(item => item > 10);
-}
+          <h3>Step 1: Create the Package</h3>
+          <p>
+            To create a new ROS2 package for your robot, use the following
+            command:
+          </p>
+          <pre><code>cd ~/ros2_ws/src
+ros2 pkg create --build-type ament_cmake walter_robot --dependencies rclcpp std_msgs</code><button class="copy-btn">Copy</button></pre>
+          <p>This command will:</p>
+          <ul>
+            <li>
+              Create a directory named <code>walter_robot</code> inside
+              <code>~/ros2_ws/src</code>.
+            </li>
+            <li>
+              Add basic files for building the package (e.g.,
+              <code>CMakeLists.txt</code>, <code>package.xml</code>).
+            </li>
+            <li>
+              Set the <code>rclcpp</code> and <code>std_msgs</code> dependencies
+              in the <code>package.xml</code> file.
+            </li>
+          </ul>
 
-const result = processData([2, 4, 6, 8, 10]);</code><button class="copy-btn">Copy</button></pre>
-        </div>
-      </div>
+          <h3>Step 2: Add a Node in Python</h3>
+          <p>Create a script to publish velocity commands:</p>
+          <pre><code>mkdir scripts
+touch scripts/cmd_vel_publisher.py</code><button class="copy-btn">Copy</button></pre>
 
-      <div id="tutorial3" class="tutorial-content">
-        <h2>Tutorial 3: Best Practices</h2>
-        <div class="tutorial-section">
-          <h3>Step 1: Code Organization</h3>
-          <p>Here's an example of well-organized code:</p>
-          <pre><code>// Constants
-const MAX_ITEMS = 100;
+          <p>
+            Edit <code>cmd_vel_publisher.py</code> to include this Python node:
+          </p>
+          <pre><code>#!/usr/bin/env python3
+import rclpy
+from rclpy.node import Node
+from geometry_msgs.msg import Twist
 
-// Utility functions
-function validateInput(input) {
-    // Implementation here
-}
+class CmdVelPublisher(Node):
+    def __init__(self):
+        super().__init__('cmd_vel_publisher')
+        self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.timer = self.create_timer(1.0, self.publish_velocity)
+        self.get_logger().info("CmdVelPublisher node has been started.")
 
-// Main functionality
-class ItemManager {
-    constructor() {
-        // Implementation here
-    }
+    def publish_velocity(self):
+        msg = Twist()
+        msg.linear.x = 0.5  # Move forward with linear velocity
+        msg.angular.z = 0.1  # Rotate slightly
+        self.publisher.publish(msg)
+        self.get_logger().info(f'Publishing: linear.x="{msg.linear.x}", angular.z="{msg.angular.z}"')
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = CmdVelPublisher()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()</code><button class="copy-btn">Copy</button></pre>
+
+          <h3>Step 3: Make the Script Executable</h3>
+          <p>Before you can run this script, make it executable:</p>
+          <pre><code>chmod +x scripts/cmd_vel_publisher.py</code><button class="copy-btn">Copy</button></pre>
+
+          <h3>Step 4: Update CMakeLists.txt</h3>
+          <p>
+            In the <code>CMakeLists.txt</code>, add the following lines to
+            install the Python script:
+          </p>
+          <pre><code>find_package(ament_cmake_python REQUIRED)
     
-    addItem(item) {
-        // Implementation here
-    }
-}
+install(PROGRAMS
+  scripts/cmd_vel_publisher.py
+  DESTINATION lib/${PROJECT_NAME}
+)</code><button class="copy-btn">Copy</button></pre>
 
-// Usage
-const manager = new ItemManager();</code><button class="copy-btn">Copy</button></pre>
+          <h3>Step 5: Build and Source the Package</h3>
+          <p>Now, build the package:</p>
+          <pre><code>cd ~/ros2_ws
+colcon build --packages-select walter_robot</code><button class="copy-btn">Copy</button></pre>
+
+          <p>After building, source the workspace:</p>
+          <pre><code>source install/setup.bash</code><button class="copy-btn">Copy</button></pre>
+
+          <h3>Step 6: Run the Node</h3>
+          <p>Finally, run the node:</p>
+          <pre><code>ros2 run walter_robot cmd_vel_publisher.py</code><button class="copy-btn">Copy</button></pre>
         </div>
       </div>
+
+      <div id="Create a ROS package" class="tutorial-content">
+        <div class="tutorial-section">
+            <h3>Step 1: Create the Package</h3>
+            <p>To create a new ROS2 package, use the following command:</p>
+            <pre><code>cd ~/ros2_ws/src
+ros2 pkg create --build-type ament_cmake walter_robot --dependencies rclcpp std_msgs</code><button class="copy-btn">Copy</button></pre>
+    
+            <p>This command will:</p>
+            <ul>
+                <li>Create a directory named <code>walter_robot</code> inside <code>~/ros2_ws/src</code>.</li>
+                <li>Add basic files for building the package, such as <code>CMakeLists.txt</code> and <code>package.xml</code>.</li>
+                <li>Set the <code>rclcpp</code> and <code>std_msgs</code> dependencies in the <code>package.xml</code> file.</li>
+            </ul>
+    
+            <p>After running the command, the package will be ready to add nodes, scripts, and other configurations. Make sure you navigate into the new <code>walter_robot</code> directory to begin customizing your package.</p>
+    
+            <h3>Step 2: Explore and Customize</h3>
+            <p>Once the package is created, you can explore its structure and begin editing the <code>CMakeLists.txt</code> and <code>package.xml</code> files to add your own nodes or scripts.</p>
+    
+            <p>You're now ready to proceed with adding nodes and further developing the <code>walter_robot</code> package!</p>
+        </div>
+    </div>
     </div>
 
     <script src="script.js"></script>
